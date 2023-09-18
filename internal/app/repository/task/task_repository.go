@@ -1,4 +1,4 @@
-package repository
+package task
 
 import "rest_api/internal/app/model"
 
