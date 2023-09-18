@@ -7,7 +7,7 @@ import (
 
 // UserRepository defines the methods for user-related operations.
 type UserRepository interface {
-	CreateUser(user *dto.CreateUserDTO) error
+	CreateUser(user *dto.CreateUserDTO) (int, error)
 	GetUserByID(id int) (*model.User, error)
 	UpdateUser(user *model.User) error
 	DeleteUser(id int) error

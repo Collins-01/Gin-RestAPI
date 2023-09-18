@@ -20,15 +20,16 @@ import (
 )
 
 func main() {
+	logger := utils.NewLogger(utils.Info)
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
+		logger.Error("No .env file found")
 	}
 	mysqlHost := os.Getenv("MYSQL_HOST")
 	mysqlPort := os.Getenv("MYSQL_PORT")
 	mysqlUser := os.Getenv("MYSQL_USER")
 	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
 	mysqlDB := os.Getenv("MYSQL_DB")
-	logger := utils.NewLogger(utils.Info)
+
 	// Create the MySQL connection string
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDB)
 	// Connect to the MySQL database

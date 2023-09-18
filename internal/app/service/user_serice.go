@@ -19,7 +19,7 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 }
 
 // CreateUser creates a new user.
-func (s *UserService) CreateUser(user *dto.CreateUserDTO) error {
+func (s *UserService) CreateUser(user *dto.CreateUserDTO) (int, error) {
 	return s.userRepo.CreateUser(user)
 }
 

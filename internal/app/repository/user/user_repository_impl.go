@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"rest_api/internal/app/dto"
 	"rest_api/internal/app/model"
-
-	"github.com/fatih/color"
+	"rest_api/internal/utils"
 )
 
 type NewUserRepositoryImpl struct {
@@ -18,16 +17,15 @@ func NewMySQLUserRepository(db *sql.DB) *NewUserRepositoryImpl {
 	return &NewUserRepositoryImpl{db: db}
 }
 
-// red := color.New(color.FgRed).SprintFunc()
-// green := color.New(color.FgGreen).SprintFunc()
-// yellow := color.New(color.FgYellow).SprintFunc()
-// CreateUser creates a new user in the database.
-func (repo *NewUserRepositoryImpl) CreateUser(user *dto.CreateUserDTO) error {
-	green := color.New(color.FgGreen).SprintFunc()
+func (repo *NewUserRepositoryImpl) CreateUser(user *dto.CreateUserDTO) (int, error) {
+	logger := utils.NewLogger(utils.Info)
+
 	// Implement the SQL insert query here
-	_, err := repo.db.Exec("INSERT INTO users (username, email) VALUES (?, ?)", user.Username, user.Email)
-	fmt.Printf("This is a %s message\n", green("green"))
-	return err
+	result, err := repo.db.Exec("INSERT INTO users (username, email) VALUES (?, ?)", user.Username, user.Email)
+	lastId, _ := result.LastInsertId()
+	message := fmt.Sprintf("Response from creating user: %v", lastId)
+	logger.Info(message)
+	return int(lastId), err
 }
 
 // GetUserByID retrieves a user by their ID from the database.
