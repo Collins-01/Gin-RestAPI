@@ -9,6 +9,8 @@ import (
 	"rest_api/internal/app/repository/task"
 	user "rest_api/internal/app/repository/user"
 
+	utils "rest_api/internal/utils"
+
 	_ "github.com/go-sql-driver/mysql"
 
 	"rest_api/internal/app/service"
@@ -26,6 +28,7 @@ func main() {
 	mysqlUser := os.Getenv("MYSQL_USER")
 	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
 	mysqlDB := os.Getenv("MYSQL_DB")
+	logger := utils.NewLogger(utils.Info)
 	// Create the MySQL connection string
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDB)
 	// Connect to the MySQL database
@@ -34,9 +37,24 @@ func main() {
 		log.Fatal(err)
 		panic(err)
 	}
+	// Create the table if it doesn't exist
+	createTableSQL := `
+	  CREATE TABLE IF NOT EXISTS users (
+		  id INT AUTO_INCREMENT PRIMARY KEY,
+		  username VARCHAR(255),
+		  email VARCHAR(255)
+	  );`
+	_, err = db.Exec(createTableSQL)
+	if err != nil {
+		message := fmt.Sprintf("Error creating table %v", err)
+		logger.Error(message)
+		return
+	}
 	defer db.Close()
 	r := gin.Default()
-	fmt.Printf("Connected to the database! %v ", db)
+
+	logger.Info("Connected To Database")
+
 	//* TASK
 	taskRepo := task.NewInMemoryTaskRepository()
 	taskService := service.NewTaskService(taskRepo)

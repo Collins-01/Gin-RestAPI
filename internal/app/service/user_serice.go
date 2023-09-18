@@ -1,6 +1,7 @@
 package service
 
 import (
+	"rest_api/internal/app/dto"
 	"rest_api/internal/app/model"
 	repository "rest_api/internal/app/repository/user"
 )
@@ -18,7 +19,7 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 }
 
 // CreateUser creates a new user.
-func (s *UserService) CreateUser(user *model.User) error {
+func (s *UserService) CreateUser(user *dto.CreateUserDTO) error {
 	return s.userRepo.CreateUser(user)
 }
 

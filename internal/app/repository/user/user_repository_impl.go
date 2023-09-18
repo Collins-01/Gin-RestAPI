@@ -2,7 +2,11 @@ package user
 
 import (
 	"database/sql"
+	"fmt"
+	"rest_api/internal/app/dto"
 	"rest_api/internal/app/model"
+
+	"github.com/fatih/color"
 )
 
 type NewUserRepositoryImpl struct {
@@ -14,10 +18,15 @@ func NewMySQLUserRepository(db *sql.DB) *NewUserRepositoryImpl {
 	return &NewUserRepositoryImpl{db: db}
 }
 
+// red := color.New(color.FgRed).SprintFunc()
+// green := color.New(color.FgGreen).SprintFunc()
+// yellow := color.New(color.FgYellow).SprintFunc()
 // CreateUser creates a new user in the database.
-func (repo *NewUserRepositoryImpl) CreateUser(user *model.User) error {
+func (repo *NewUserRepositoryImpl) CreateUser(user *dto.CreateUserDTO) error {
+	green := color.New(color.FgGreen).SprintFunc()
 	// Implement the SQL insert query here
 	_, err := repo.db.Exec("INSERT INTO users (username, email) VALUES (?, ?)", user.Username, user.Email)
+	fmt.Printf("This is a %s message\n", green("green"))
 	return err
 }
 
