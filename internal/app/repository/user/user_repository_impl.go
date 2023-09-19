@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"rest_api/internal/app/dto"
+	error_handlers "rest_api/internal/app/error_handlers"
 	"rest_api/internal/app/model"
 	"rest_api/internal/utils"
 )
@@ -33,6 +34,10 @@ func (repo *NewUserRepositoryImpl) GetUserByID(id int) (*model.User, error) {
 	var user model.User
 	err := repo.db.QueryRow("SELECT id, username, email FROM users WHERE id=?", id).
 		Scan(&user.ID, &user.Username, &user.Email)
+
+	if err == sql.ErrNoRows {
+		return nil, &error_handlers.UserNotFoundError{UserID: id}
+	}
 	if err != nil {
 		return nil, err
 	}

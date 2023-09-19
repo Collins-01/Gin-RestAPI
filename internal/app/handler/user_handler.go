@@ -7,6 +7,7 @@ import (
 	"rest_api/internal/app/model"
 	"rest_api/internal/app/service"
 	utils "rest_api/internal/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,5 +41,26 @@ func (u *UserHandler) CreateUser(c *gin.Context) {
 	data.Email = user.Email
 	data.Username = user.Username
 	c.JSON(http.StatusCreated, gin.H{"message": "Created user successfully", "data": data})
+
+}
+
+func (s *UserHandler) GetUserByID(c *gin.Context) {
+	logger := utils.NewLogger(utils.Info)
+	idParam := c.Param("id")
+	id, err1 := strconv.Atoi(idParam)
+	if err1 != nil {
+		logger.Error("Param is not an error")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Param is not a number"})
+		return
+	}
+	data, err := s.userService.GetUserByID(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	} else {
+		c.JSON(http.StatusCreated, gin.H{"message": "Feched User successfully", "data": data})
+		return
+	}
 
 }

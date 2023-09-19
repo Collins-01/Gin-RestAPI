@@ -70,6 +70,7 @@ func main() {
 	r.GET("/tasks", taskHandler.ListTasks)
 	r.POST("/tasks", taskHandler.AddTask)
 	r.POST("/users/create", userHandler.CreateUser)
+	r.GET("/users/:id", userHandler.GetUserByID)
 
 	// Start the server
 	r.Run(":8080")
