@@ -49,7 +49,7 @@ func (s *UserHandler) GetUserByID(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err1 := strconv.Atoi(idParam)
 	if err1 != nil {
-		logger.Error("Param is not an error")
+		logger.Error("Param is not an integer")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Param is not a number"})
 		return
 	}
@@ -62,5 +62,33 @@ func (s *UserHandler) GetUserByID(c *gin.Context) {
 		c.JSON(http.StatusCreated, gin.H{"message": "Feched User successfully", "data": data})
 		return
 	}
+
+}
+
+func (s *UserHandler) UpdateUser(c *gin.Context) {
+	logger := utils.NewLogger(utils.Info)
+	idParam := c.Param("id")
+	id, err1 := strconv.Atoi(idParam)
+	if err1 != nil {
+		logger.Error("Param is not an integer")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Param is not a number"})
+		return
+	}
+	var user dto.UpdateUserDTO
+	if err := c.ShouldBindJSON(&user); err != nil {
+		message := fmt.Sprintf("Error creating user: %v", err)
+		logger.Warning(message)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	updateError := s.userService.UpdateUser(&user, id)
+
+	if updateError != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": updateError.Error()})
+		return
+	}
+	c.JSON(http.StatusAccepted, gin.H{"message": "User updated successfully"})
+	return
 
 }

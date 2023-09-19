@@ -29,8 +29,8 @@ func (s *UserService) GetUserByID(id int) (*model.User, error) {
 }
 
 // UpdateUser updates a user's information.
-func (s *UserService) UpdateUser(user *model.User) error {
-	return s.userRepo.UpdateUser(user)
+func (s *UserService) UpdateUser(user *dto.UpdateUserDTO, id int) error {
+	return s.userRepo.UpdateUser(user, id)
 }
 
 // DeleteUser deletes a user by their ID.

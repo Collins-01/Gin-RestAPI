@@ -71,6 +71,7 @@ func main() {
 	r.POST("/tasks", taskHandler.AddTask)
 	r.POST("/users/create", userHandler.CreateUser)
 	r.GET("/users/:id", userHandler.GetUserByID)
+	r.PATCH("/users/update/:id", userHandler.UpdateUser)
 
 	// Start the server
 	r.Run(":8080")

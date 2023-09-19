@@ -45,9 +45,14 @@ func (repo *NewUserRepositoryImpl) GetUserByID(id int) (*model.User, error) {
 }
 
 // UpdateUser updates a user's information in the database.
-func (repo *NewUserRepositoryImpl) UpdateUser(user *model.User) error {
+func (repo *NewUserRepositoryImpl) UpdateUser(user *dto.UpdateUserDTO, id int) error {
+	logger := utils.NewLogger(utils.Info)
 	// Implement the SQL update query here
-	_, err := repo.db.Exec("UPDATE users SET username=?, email=? WHERE id=?", user.Username, user.Email, user.ID)
+	result, err := repo.db.Exec("UPDATE users SET username=?, email=? WHERE id=?", user.Username, user.Email, id)
+	logger.Info(fmt.Sprintf("Result from updating user info: %v", result))
+	if err == sql.ErrNoRows {
+		return &error_handlers.UserNotFoundError{UserID: id}
+	}
 	return err
 }
 
